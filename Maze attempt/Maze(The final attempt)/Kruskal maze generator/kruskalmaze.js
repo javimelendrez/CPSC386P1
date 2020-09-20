@@ -18,7 +18,7 @@ function setup(){
   hgt=height/g_sz; //columns
   maze = new mazeSolve(wid, hgt, g_sz);
   maze.initialize();
-  frameRate(30)
+  frameRate(100)
 }
 
 function draw() {
