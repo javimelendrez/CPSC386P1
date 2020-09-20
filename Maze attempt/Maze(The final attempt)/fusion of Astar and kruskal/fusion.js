@@ -1,4 +1,4 @@
-var g_sz=20;// size of the cells
+var g_sz=15;// size of the cells
 var mazeGrid = [];
 var maze;
 var cols=40;
@@ -14,7 +14,7 @@ var path = [];
 var nosolution = false;
 
 function setup(){
-  createCanvas(800,800);
+  createCanvas(600,600);
 
   wid = width/g_sz; //rows
   hgt=height/g_sz; //columns
@@ -22,11 +22,13 @@ function setup(){
   maze.initialize();
   frameRate(100)
 
-  console.log('A*')
+  w = width/cols;//columns
+  h = height/rows;//rows
 
-  for (var i=0; i < cols; i++){
-    grid[i] = new Array(rows);// creates an array of rows
-  }
+  //making a 2D array
+    for (var i=0; i < cols; i++){
+      grid[i] = new Array(rows);// creates an array of rows
+    }
 
     for (var i=0; i < cols; i++){
       for (var j=0; j < rows; j++){
@@ -48,7 +50,6 @@ openSet.push(start);
 
   console.log(grid);
 
-
 }
 
 function draw() {
@@ -67,6 +68,7 @@ if (openSet.length>0){
 
     if (current === end){
       console.log("DONE!");
+      noLoop();
     }
     removal(openSet,current);
     closedSet.push(current);
@@ -101,7 +103,9 @@ if (openSet.length>0){
 
 
 //we keep going
-} else {
+
+}
+else {
   console.log('no solution');
   nosolution=true;
   noLoop();
@@ -124,7 +128,6 @@ if (openSet.length>0){
   }
 
   //find the path
-  if(!nosolution){
   path = [];
   var temp = current;
   path.push(temp);
@@ -132,7 +135,7 @@ if (openSet.length>0){
     path.push(temp.previous);
     temp=temp.previous;
   }
-}
+
   for ( var i=0; i<path.length; i++){//blue
     path[i].shows(color(255,0,0));
   }
@@ -168,6 +171,7 @@ function mazeSolve(wid, hgt, g_sz){
 			}
 		}
 	}
+	
 	// draw
 	this.display = function(){
 		for(var i = 0; i < this.walls.length; i++){
@@ -178,6 +182,7 @@ function mazeSolve(wid, hgt, g_sz){
 			this.walls[i].show();
 		}
 	}
+	
 	// build gradually
 	this.constructOneStep = function(){
 		var  wall  =  this . walls [ this . wallIndex ] ;           // select walls in order
@@ -197,11 +202,14 @@ function mazeSolve(wid, hgt, g_sz){
 			if (p1 != p2){
 				this.walls[this.wallIndex].breaked = true;   // remove
 				this . uSet . unionTwo ( c1Index ,  c2Index ) ;         // merge
+        console.log('merged')
 			}
 		}
 		this.wallIndex++;
 		if(this.wallIndex >= this.walls.length){
 			this.wallIndex = this.walls.length - 1;
+      noLoop();
+      console.log('end')
 		}
 	}
 }
@@ -269,10 +277,11 @@ function removal(arr, elt) {
     }
   }
 }
+
 //calculate distance between two points
 function heuristic(a, b){
-  var d = dist(a.i,a.j,b.i,b.j)
-  //var d = abs(a.i-b.i) + abs(a.j-b.j)
+  //var d = dist(a.i,a.j,b.i,b.j)
+  var d = abs(a.i-b.i) + abs(a.j-b.j)
   return d;
 }
 
@@ -283,7 +292,7 @@ function Spot(i,j){
   this.g=0;
   this.h=0;
   this.neighbors=[];
-  this.previous;
+  this.previous= undefined;
 
   this.shows=function(col){
     fill(col);
@@ -306,8 +315,5 @@ function Spot(i,j){
   this.neighbors.push(grid[i][j-1]);
     }
   }
-
-
-
 
 }
